@@ -1,0 +1,151 @@
+.volver {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  h1 {
+    font-size: 1.5rem;
+    word-break: break-word;
+  }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  color: var(--texto-suave);
+}
+
+.eliminar {
+  color: var(--error);
+}
+
+.resumen {
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+
+  h2 {
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+  }
+}
+
+.ayuda {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.campo {
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.revisar {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--aviso-fondo);
+  color: var(--aviso);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.estado {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--aviso-fondo);
+  color: var(--aviso);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.estado--ok {
+  background: var(--ok-fondo);
+  color: var(--ok);
+}
+
+.estado--error {
+  background: var(--error-fondo);
+  color: var(--error);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat__mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 160px;
+  max-height: 420px;
+  padding-right: 4px;
+  overflow-y: auto;
+}
+
+.mensaje {
+  align-self: flex-start;
+  max-width: 90%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--fondo-pagina);
+
+  p {
+    margin: 2px 0 0;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.mensaje--usuario {
+  align-self: flex-end;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.mensaje__autor {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.chat__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  button {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 860px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "stryker-config": {
+    "project": "DocuIA.Api.csproj",
+    "solution": "../../DocuIA.sln",
+    "reporters": ["html", "progress", "json"],
+    "mutate": [
+      "**/Servicios/AutenticacionService.cs",
+      "**/Servicios/ClaveService.cs",
+      "**/Servicios/DocumentoService.cs",
+      "**/Servicios/TokenService.cs",
+      "**/Servicios/ValidadorArchivo.cs",
+      "**/Servicios/ProveedorDemostracion.cs"
+    ],
+    "ignore-methods": ["Log*"],
+    "coverage-analysis": "perTest",
+    "concurrency": 4,
+    "thresholds": { "high": 85, "low": 70, "break": 70 }
+  }
+}

@@ -1,0 +1,110 @@
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando el documento" />
+} @else if (errorCarga()) {
+  <p class="aviso aviso--error" role="alert">{{ errorCarga() }}</p>
+  <a mat-stroked-button routerLink="/documentos">Volver a mis documentos</a>
+  <button mat-button type="button" (click)="cargar()">Reintentar</button>
+} @else {
+  @if (documento(); as doc) {
+  <a class="volver" routerLink="/documentos">← Mis documentos</a>
+
+  <div class="cabecera">
+    <div>
+      <h1>{{ doc.nombreArchivo }}</h1>
+      <p class="meta">
+        <span [class]="claseEstado(doc.estado)">{{ doc.estado }}</span>
+        {{ doc.tipo || 'Sin tipo' }} · {{ formatearTamano(doc.tamanoBytes) }} · {{ doc.fecha }} {{ doc.hora }}
+      </p>
+    </div>
+    <button mat-button type="button" class="eliminar" (click)="eliminar()">Eliminar</button>
+  </div>
+
+  @if (doc.resumen) {
+    <p class="tarjeta resumen"><strong>Resumen:</strong> {{ doc.resumen }}</p>
+  }
+
+  <div class="columnas">
+    <section class="tarjeta" aria-labelledby="titulo-datos">
+      <h2 id="titulo-datos">Datos encontrados</h2>
+
+      @if (doc.campos.length === 0) {
+        <p class="ayuda">La IA no encontró datos en este documento.</p>
+      } @else {
+        <p class="ayuda">
+          Revisa cada dato y corrígelo si hace falta. Los marcados como <strong>Revisar</strong> tienen baja
+          confianza.
+        </p>
+        <p class="leyenda"><span class="obligatorio">*</span> Campo obligatorio</p>
+
+
+        <form [formGroup]="formulario" (ngSubmit)="confirmar()" novalidate>
+          <div formArrayName="campos">
+            @for (campo of doc.campos; track campo.codCampo; let i = $index) {
+              <mat-form-field appearance="outline" class="campo" subscriptSizing="dynamic">
+                <mat-label>
+                  {{ campo.etiqueta }} <span class="obligatorio" aria-hidden="true">*</span>
+                  @if (esDudoso(campo)) { <span class="revisar">Revisar · {{ porcentaje(campo) }}%</span> }
+                </mat-label>
+                <input matInput [formControlName]="i" [attr.maxlength]="maximoValor"
+                       [placeholder]="'Ej.: ' + campo.valor" required />
+                @if (campo.valorConfirmado !== null && campo.valorConfirmado !== campo.valor) {
+                  <mat-hint>La IA leyó: {{ campo.valor }}</mat-hint>
+                }
+                @if (controlesCampos[i].touched && controlesCampos[i].invalid) {
+                  <mat-error>
+                    @if (controlesCampos[i].hasError('obligatorio')) { Completa este dato }
+                    @else { Máximo {{ maximoValor }} caracteres }
+                  </mat-error>
+                }
+              </mat-form-field>
+            }
+          </div>
+
+          <button mat-flat-button type="submit" [disabled]="guardando()">
+            @if (guardando()) { Guardando… } @else { Confirmar datos }
+          </button>
+        </form>
+      }
+    </section>
+
+    <section class="tarjeta chat" aria-labelledby="titulo-chat">
+      <h2 id="titulo-chat">Pregúntale al documento</h2>
+
+      <div class="chat__mensajes" #listaMensajes role="log" aria-live="polite">
+        @if (mensajes().length === 0) {
+          <p class="ayuda">Ej.: «¿Cuál es el total?», «¿Quién emitió el documento?».</p>
+        }
+        @for (m of mensajes(); track m.codMensaje) {
+          <div class="mensaje" [class.mensaje--usuario]="m.origen === 'Usuario'">
+            <span class="mensaje__autor">{{ m.origen === 'Usuario' ? 'Tú' : 'DocuIA' }} · {{ m.hora }}</span>
+            <p>{{ m.texto }}</p>
+          </div>
+        }
+        @if (pensando()) {
+          <div class="mensaje"><span class="mensaje__autor">DocuIA</span><p>Pensando…</p></div>
+        }
+      </div>
+
+      @if (errorPregunta(); as mensaje) {
+        <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+      }
+
+      <form class="chat__form" (submit)="enviarPregunta($event)" novalidate>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Tu pregunta <span class="obligatorio" aria-hidden="true">*</span></mat-label>
+          <textarea matInput [formControl]="pregunta" rows="2" placeholder="Ej.: ¿Cuál es el total?"
+                    [attr.maxlength]="maximoPregunta" (keydown.enter)="$any($event).shiftKey ? null : enviarPregunta($event)"
+                    required></textarea>
+          <mat-hint align="end">{{ pregunta.value.length }}/{{ maximoPregunta }}</mat-hint>
+          @if (pregunta.touched && pregunta.invalid) {
+            <mat-error>Escribe tu pregunta (máximo {{ maximoPregunta }} caracteres)</mat-error>
+          }
+        </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="pensando()">
+          @if (pensando()) { Enviando… } @else { Preguntar }
+        </button>
+      </form>
+    </section>
+  </div>
+  }
+}

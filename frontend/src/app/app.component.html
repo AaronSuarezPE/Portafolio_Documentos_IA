@@ -1,0 +1,21 @@
+<header class="barra">
+  <a class="marca" routerLink="/documentos" aria-label="DocuIA, ir a mis documentos">
+    <span class="marca__logo" aria-hidden="true">D</span>
+    <span class="marca__nombre">DocuIA</span>
+  </a>
+
+  @if (auth.sesion(); as sesion) {
+    <div class="barra__usuario">
+      <span class="barra__nombre">{{ sesion.nombre }}</span>
+      <button mat-stroked-button type="button" (click)="auth.cerrarSesion()">Salir</button>
+    </div>
+  }
+</header>
+
+<main class="contenido">
+  <router-outlet />
+</main>
+
+<footer class="pie">
+  Proyecto de portafolio de Aarón Suárez · Angular 19 · .NET 9 · SQL Server
+</footer>

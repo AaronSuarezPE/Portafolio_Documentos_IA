@@ -1,0 +1,105 @@
+<section>
+  <div class="cabecera">
+    <div>
+      <h1>Mis documentos</h1>
+      <p class="subtitulo">Sube un documento y revisa los datos que la IA encontró.</p>
+    </div>
+    <button mat-flat-button type="button" (click)="abrirPanel()">Subir documento</button>
+  </div>
+
+  @if (modoDemostracion()) {
+    <p class="aviso aviso--info" role="status">
+      Esta demostración está en <strong>modo demostración</strong>: devuelve datos de ejemplo en lugar de leer tu
+      archivo. Con la clave de IA configurada en el servidor, analiza el documento real.
+    </p>
+  }
+
+  @if (errorLista(); as mensaje) {
+    <p class="aviso aviso--error" role="alert">
+      {{ mensaje }}
+      <button mat-button type="button" (click)="cargar()">Reintentar</button>
+    </p>
+  }
+
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Cargando documentos" />
+  } @else if (documentos().length === 0 && !errorLista()) {
+    <div class="tarjeta vacio">
+      <h2>Aún no tienes documentos</h2>
+      <p>Sube una factura, un contrato o una constancia en PDF, PNG o JPG para empezar. No se aceptan Excel, Word ni otros formatos.</p>
+      <button mat-flat-button type="button" (click)="abrirPanel()">Subir mi primer documento</button>
+    </div>
+  } @else {
+    <ul class="lista">
+      @for (d of documentos(); track d.codDocumento) {
+        <li class="tarjeta fila">
+          <div class="fila__principal">
+            <a class="fila__nombre" [routerLink]="['/documentos', d.codDocumento]">{{ d.nombreArchivo }}</a>
+            <span class="fila__detalle">
+              {{ d.tipo || 'Sin tipo' }} · {{ formatearTamano(d.tamanoBytes) }} · {{ d.fecha }} {{ d.hora }}
+            </span>
+          </div>
+          <span [class]="claseEstado(d.estado)">{{ d.estado }}</span>
+          <div class="fila__acciones">
+            <a mat-stroked-button [routerLink]="['/documentos', d.codDocumento]">Abrir</a>
+            <button mat-button type="button" class="eliminar" (click)="eliminar(d)"
+                    [attr.aria-label]="'Eliminar ' + d.nombreArchivo">Eliminar</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+@if (panelAbierto()) {
+  <app-panel-lateral titulo="Subir documento" (cerrar)="cerrarPanel()">
+    <form id="form-subida" (submit)="$event.preventDefault(); analizar()" novalidate>
+      <p class="leyenda"><span class="obligatorio">*</span> Campo obligatorio</p>
+
+      <label class="etiqueta" for="archivo">
+        Documento <span class="obligatorio" aria-hidden="true">*</span>
+      </label>
+
+      @if (archivo(); as elegido) {
+        <div class="elegido">
+          <div>
+            <strong>{{ elegido.name }}</strong>
+            <span>{{ formatearTamano(elegido.size) }}</span>
+          </div>
+          <button mat-button type="button" (click)="quitarArchivo()" [disabled]="subiendo()">Quitar</button>
+        </div>
+      } @else {
+        <div class="zona" [class.zona--activa]="arrastrando()" [class.zona--error]="errorArchivo()"
+             (dragover)="alArrastrar($event)" (dragleave)="arrastrando.set(false)" (drop)="alSoltar($event)">
+          <p>Arrastra tu archivo aquí o</p>
+          <label class="boton-archivo" for="archivo">Elegir archivo</label>
+        </div>
+      }
+
+      <input id="archivo" class="oculto" type="file" accept=".pdf,.png,.jpg,.jpeg"
+             aria-required="true" aria-describedby="ayuda-archivo error-archivo" (change)="alElegir($event)" />
+
+      @if (errorArchivo(); as mensaje) {
+        <p id="error-archivo" class="campo-error" role="alert">{{ mensaje }}</p>
+      }
+
+      <div id="ayuda-archivo" class="formatos" role="note">
+        <p><strong>Qué puedes subir</strong></p>
+        <p class="formatos__si">✓ PDF, PNG y JPG (máximo {{ maximoMb }} MB, un documento a la vez).</p>
+        <p class="formatos__no">✗ No se aceptan Excel, Word, PowerPoint, texto ni comprimidos. Si tu documento está en otro formato, guárdalo como PDF y súbelo.</p>
+      </div>
+
+      @if (subiendo()) {
+        <mat-progress-bar mode="indeterminate" aria-label="Analizando el documento" />
+        <p class="ayuda">Analizando con IA… puede tardar hasta un minuto.</p>
+      }
+    </form>
+
+    <ng-container pie>
+      <button mat-button type="button" (click)="cerrarPanel()" [disabled]="subiendo()">Cancelar</button>
+      <button mat-flat-button type="submit" form="form-subida" [disabled]="subiendo()">
+        @if (subiendo()) { Analizando… } @else { Analizar documento }
+      </button>
+    </ng-container>
+  </app-panel-lateral>
+}
