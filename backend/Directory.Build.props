@@ -1,5 +1,5 @@
 <Project>
-  <!-- Capa 1 (nts-pruebas): análisis estático. Las advertencias del compilador y de los analizadores rompen la compilación. -->
+  <!-- Análisis estático: Las advertencias del compilador y de los analizadores rompen la compilación. -->
   <PropertyGroup>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>

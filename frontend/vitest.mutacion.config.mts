@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-// Solo para el mutation testing (capa 2 de nts-pruebas): corre en Node las pruebas de lógica pura de core/.
+// Solo para el mutation testing: corre en Node las pruebas de lógica pura de core/.
 export default defineConfig({
   test: {
     globals: true,

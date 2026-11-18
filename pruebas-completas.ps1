@@ -4,10 +4,10 @@
     Termina con código distinto de 0 si algo falla.
 
 .DESCRIPTION
-    Capa 1  Tests y linters   : pruebas SQL, compilación con analizadores (advertencias = error), pruebas del backend,
+    1  Tests y linters       : pruebas SQL, compilación con analizadores (advertencias = error), pruebas del backend,
                                 linter del frontend y pruebas del frontend.
-    Capa 2  Mutation testing  : Stryker.NET (backend) y StrykerJS (frontend). Falla bajo el umbral de cada config.
-    Capa 3  Pruebas E2E       : Playwright contra la API y el frontend reales (levanta y apaga los servidores).
+    2  Mutation testing      : Stryker.NET (backend) y StrykerJS (frontend). Falla bajo el umbral de cada config.
+    3  Pruebas E2E           : Playwright contra la API y el frontend reales (levanta y apaga los servidores).
 
 
 .EXAMPLE
@@ -58,18 +58,18 @@ function Ejecutar([int]$capa, [string]$nombre, [string]$carpeta, [scriptblock]$a
     $resultados.Add([pscustomobject]@{ Capa = $capa; Paso = $nombre; Estado = $(if ($ok) { 'OK' } else { 'FALLÓ' }); Segundos = [math]::Round($reloj.Elapsed.TotalSeconds) })
 }
 
-# ---------------- Capa 1: tests y linters ----------------
+# ---------------- 1. tests y linters ----------------
 Ejecutar 1 'Procedimientos SQL'                 $BaseDatos  { powershell -NoProfile -ExecutionPolicy Bypass -File .\instalar.ps1 -ConPruebas } 'PASARON'
 Ejecutar 1 'Compilación con analizadores'       $Solucion   { dotnet build -nologo -v q }
 Ejecutar 1 'Pruebas del backend'                $Solucion   { dotnet test -nologo -v q --no-build }
 Ejecutar 1 'Linter del frontend (ESLint)'       $Frontend   { npx ng lint }
 Ejecutar 1 'Pruebas del frontend'               $Frontend   { npx ng test --watch=false --browsers=ChromeHeadless }
 
-# ---------------- Capa 2: mutation testing ----------------
+# ---------------- 2. mutation testing ----------------
 Ejecutar 2 'Mutación del backend (Stryker.NET)' $Solucion   { dotnet tool restore | Out-Null; Set-Location $PruebasApi; dotnet dotnet-stryker --config-file stryker-config.json }
 Ejecutar 2 'Mutación del frontend (StrykerJS)'  $Frontend   { npx stryker run }
 
-# ---------------- Capa 3: E2E ----------------
+# ---------------- 3. E2E ----------------
 Ejecutar 3 'Pruebas E2E (Playwright)'           $Frontend   { npx playwright test }
 
 # ---------------- Resumen ----------------
