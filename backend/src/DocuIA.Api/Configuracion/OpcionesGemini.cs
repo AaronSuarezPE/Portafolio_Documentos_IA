@@ -5,7 +5,7 @@ public sealed class OpcionesGemini
     public const string Seccion = "Gemini";
 
     public string ApiKey { get; set; } = string.Empty;
-    public string Modelo { get; set; } = "gemini-2.5-flash";
+    public string Modelo { get; set; } = "gemini-flash-latest";
     public string UrlBase { get; set; } = "https://generativelanguage.googleapis.com/v1beta";
 
     public bool Habilitado => !string.IsNullOrWhiteSpace(ApiKey);

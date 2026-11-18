@@ -4,6 +4,11 @@ Aplicación web que lee documentos con inteligencia artificial. Subes una factur
 
 Proyecto de portafolio de Aarón Suárez.
 
+## Demostración en línea
+
+- Aplicación: https://docuia.pages.dev (se puede entrar como invitado, sin registro)
+- API y documentación Swagger: https://asportafolioproy01.runasp.net
+
 ## Tecnologías
 
 | Capa | Tecnología |
@@ -12,7 +17,7 @@ Proyecto de portafolio de Aarón Suárez.
 | Backend | .NET 9, ASP.NET Core (Controllers), Dapper, JWT, Serilog, Swagger |
 | Base de datos | SQL Server, todo con procedimientos almacenados |
 | IA | Gemini por API REST, llamada solo desde el servidor |
-| Publicación | Backend y base en MonsterASP.NET, frontend en Netlify |
+| Publicación | Backend y base en MonsterASP.NET, frontend en Cloudflare Pages |
 
 Sin clave de Gemini la aplicación funciona en **modo demostración**, con datos de ejemplo.
 

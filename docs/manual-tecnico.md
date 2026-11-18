@@ -85,7 +85,7 @@ Los errores esperados devuelven `{ "mensaje": "…" }` con 400, 401, 404 o 429; 
 | `ConnectionStrings:DocuIA` | Cadena a SQL Server | variable de entorno / secretos |
 | `Jwt:Clave` | Clave de firma (obligatoria) | variable de entorno / secretos |
 | `Gemini:ApiKey` | Clave de IA; vacía = modo demostración | variable de entorno / secretos |
-| `Gemini:Modelo` | Modelo (por defecto `gemini-2.5-flash`) | appsettings |
+| `Gemini:Modelo` | Modelo (por defecto `gemini-flash-latest`) | appsettings |
 | `Archivos:TamanoMaximoMb` | Máximo por archivo | appsettings |
 | `Cors:Origenes` | Orígenes permitidos del frontend | appsettings / entorno |
 
@@ -129,7 +129,7 @@ Un solo comando corre todo y termina con error si algo falla:
 ## 8. Despliegue
 
 - **Base de datos y API:** MonsterASP.NET (SQL Server y hosting .NET). Se instala la base con `instalar.ps1` apuntando al servidor remoto (sin `-CrearBd`), se publica con `dotnet publish -c Release` y se sube el contenido a la raíz del sitio. La configuración (`ConnectionStrings:DocuIA`, `Jwt:Clave`, `Gemini:ApiKey`, `Cors:Origenes`) va en un `appsettings.Production.json` que no se sube al repositorio.
-- **Frontend:** Netlify. Se ajusta `apiUrl` en `src/environments/environment.ts`, se ejecuta `ng build` y se publica `dist/frontend/browser`. El archivo `_redirects` envía todas las rutas a `index.html`.
+- **Frontend:** Cloudflare Pages. Se ajusta `apiUrl` en `src/environments/environment.ts`, se ejecuta `ng build` y se publica `dist/frontend/browser` con `wrangler pages deploy`. El archivo `_redirects` envía todas las rutas a `index.html`.
 - **Swagger:** la API publica su documentación en la raíz (`/swagger`).
 - **Hospedaje compartido:** algunos bloquean PUT y DELETE con un firewall. Si al confirmar datos o eliminar aparece un error de CORS sin registro en la API, hay que revisar esa regla.
 
